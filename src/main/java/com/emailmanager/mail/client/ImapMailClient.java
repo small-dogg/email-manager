@@ -22,21 +22,35 @@ public class ImapMailClient implements MailClient {
     }
 
     @Override
-    public MailPageResponse getMessages(ServerConfig serverConfig, int page, int size) {
+    public MailPageResponse getMessages(ServerConfig serverConfig, int page, int size, String sort) {
         try (Store store = connectStore(serverConfig);
              Folder folder = openFolder(store, Folder.READ_ONLY)) {
 
             int totalMessages = folder.getMessageCount();
             int totalPages = (int) Math.ceil((double) totalMessages / size);
+            boolean asc = "asc".equalsIgnoreCase(sort);
 
-            int end = totalMessages - (page * size);
-            int start = Math.max(end - size + 1, 1);
+            int start;
+            int end;
+            if (asc) {
+                start = page * size + 1;
+                end = Math.min(start + size - 1, totalMessages);
+            } else {
+                end = totalMessages - (page * size);
+                start = Math.max(end - size + 1, 1);
+            }
 
             List<MailSummaryResponse> summaries = new ArrayList<>();
-            if (end >= 1) {
+            if (start <= totalMessages && end >= 1) {
                 Message[] messages = folder.getMessages(start, end);
-                for (int i = messages.length - 1; i >= 0; i--) {
-                    summaries.add(MailSummaryResponse.from(messages[i]));
+                if (asc) {
+                    for (Message message : messages) {
+                        summaries.add(MailSummaryResponse.from(message));
+                    }
+                } else {
+                    for (int i = messages.length - 1; i >= 0; i--) {
+                        summaries.add(MailSummaryResponse.from(messages[i]));
+                    }
                 }
             }
 

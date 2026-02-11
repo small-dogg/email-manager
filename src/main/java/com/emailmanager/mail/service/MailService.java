@@ -10,7 +10,7 @@ public interface MailService {
 
     List<ServerConfig> getServers();
 
-    MailPageResponse getMessages(String serverName, int page, int size);
+    MailPageResponse getMessages(String serverName, int page, int size, String sort);
 
     MailDetailResponse getMessage(String serverName, int messageId);
 

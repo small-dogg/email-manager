@@ -10,7 +10,7 @@ public interface MailClient {
 
     boolean supports(String protocol);
 
-    MailPageResponse getMessages(ServerConfig serverConfig, int page, int size);
+    MailPageResponse getMessages(ServerConfig serverConfig, int page, int size, String sort);
 
     MailDetailResponse getMessage(ServerConfig serverConfig, int messageId);
 

@@ -25,10 +25,10 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public MailPageResponse getMessages(String serverName, int page, int size) {
+    public MailPageResponse getMessages(String serverName, int page, int size, String sort) {
         ServerConfig config = findServerConfig(serverName);
         MailClient client = resolveClient(config.getProtocol());
-        return client.getMessages(config, page, size);
+        return client.getMessages(config, page, size, sort);
     }
 
     @Override
